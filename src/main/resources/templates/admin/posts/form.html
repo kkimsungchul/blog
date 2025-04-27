@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/admin :: html(
+        ~{::title},
+        ~{::#content},
+        ~{}
+      )}">
+<head>
+    <title th:text="${post.id == null ? 'Create Post' : 'Edit Post'} + ' - Admin'">Create/Edit Post - Admin</title>
+</head>
+<body>
+    <div id="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2" th:text="${post.id == null ? 'Create Post' : 'Edit Post'}">Create/Edit Post</h1>
+            <a th:href="@{/admin/posts}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Posts
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{${post.id == null ? '/admin/posts/create' : '/admin/posts/edit/' + post.id}}" 
+                      th:object="${post}" 
+                      method="post">
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" th:field="*{title}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="postContent" class="form-label">Content</label>
+                        <textarea class="form-control" id="postContent" th:field="*{content}" rows="10" required></textarea>
+                        <div class="text-danger" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content Error</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="categoryId" class="form-label">Category</label>
+                            <select class="form-select" id="categoryId" name="categoryId" required>
+                                <option value="">Select a category</option>
+                                <option th:each="category : ${categories}" 
+                                        th:value="${category.id}" 
+                                        th:text="${category.name}"
+                                        th:selected="${post.category != null && post.category.id == category.id}">
+                                    Category Name
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="authorId" class="form-label">Author</label>
+                            <select class="form-select" id="authorId" name="authorId" required>
+                                <option value="">Select an author</option>
+                                <option th:each="user : ${users}" 
+                                        th:value="${user.id}" 
+                                        th:text="${user.name != null && !user.name.isEmpty() ? user.name : user.username}"
+                                        th:selected="${post.author != null && post.author.id == user.id}">
+                                    Author Name
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a th:href="@{/admin/posts}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi" th:classappend="${post.id == null ? 'bi-plus-circle' : 'bi-save'}"></i>
+                            <span th:text="${post.id == null ? 'Create' : 'Update'}">Submit</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

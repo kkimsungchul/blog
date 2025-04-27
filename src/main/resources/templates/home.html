@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/default :: html(
+        ~{::title},
+        ~{::#content},
+        ~{}
+      )}">
+<head>
+    <title>Home - Blog</title>
+</head>
+<body>
+    <div id="content">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-md-8">
+                <div class="jumbotron p-4 mb-4 bg-light rounded">
+                    <h1 class="display-4">처리의 개발 블로그</h1>
+                    <p class="lead">블로그에서 필요한 정보를 확인하고 생각을 공유해요</p>
+                    <hr class="my-4">
+                    <p>카테고리에서 관련된 내용을 확인하거나 아래에서 최신 게시물을 확인해주세요</p>
+                    <a class="btn btn-primary btn-lg" th:href="@{/posts}" role="button">View All Posts</a>
+                </div>
+
+                <h2 class="mb-4">Recent Posts</h2>
+                
+                <div th:if="${#lists.isEmpty(recentPosts)}" class="alert alert-info">
+                    No posts available yet.
+                </div>
+                
+                <div th:each="post : ${recentPosts}" class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title" th:text="${post.title}">Post Title</h3>
+                        <div class="card-subtitle mb-2 text-muted">
+                            <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Date</span> | 
+                            Category: <a th:href="@{/categories/{id}(id=${post.category.id})}" th:text="${post.category.name}">Category</a> | 
+                            Author: <span th:text="${post.author.name}">Author</span>
+                        </div>
+                        <p class="card-text" th:text="${#strings.abbreviate(post.content, 200)}">Content preview...</p>
+                        <a th:href="@{/posts/{id}(id=${post.id})}" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(categories)}" class="alert alert-info">
+                            No categories available yet.
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li th:each="category : ${categories}" class="list-group-item d-flex justify-content-between align-items-center">
+                                <a th:href="@{/categories/{id}(id=${category.id})}" th:text="${category.name}">Category Name</a>
+                                <span class="badge bg-primary rounded-pill" th:text="${category.posts.size()}">0</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>This is a blog platform where you can read and comment on various topics.</p>
+                        <a th:href="@{/about}" class="btn btn-sm btn-outline-secondary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

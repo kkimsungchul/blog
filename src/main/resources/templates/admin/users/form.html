@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/admin :: html(
+        ~{::title},
+        ~{::#content},
+        ~{}
+      )}">
+<head>
+    <title th:text="${user.id == null ? 'Create User' : 'Edit User'} + ' - Admin'">Create/Edit User - Admin</title>
+</head>
+<body>
+    <div id="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2" th:text="${user.id == null ? 'Create User' : 'Edit User'}">Create/Edit User</h1>
+            <a th:href="@{/admin/users}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Users
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{${user.id == null ? '/admin/users/create' : '/admin/users/edit/' + user.id}}" 
+                      th:object="${user}" 
+                      method="post">
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            Password
+                            <span th:if="${user.id != null}" class="text-muted">(Leave empty to keep current password)</span>
+                        </label>
+                        <input type="password" class="form-control" id="password" th:field="*{password}" th:required="${user.id == null}">
+                        <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}">
+                        <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isAdmin" th:field="*{admin}">
+                        <label class="form-check-label" for="isAdmin">Administrator</label>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a th:href="@{/admin/users}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi" th:classappend="${user.id == null ? 'bi-plus-circle' : 'bi-save'}"></i>
+                            <span th:text="${user.id == null ? 'Create' : 'Update'}">Submit</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/admin :: html(
+        ~{::title},
+        ~{::#content},
+        ~{}
+      )}">
+<head>
+    <title>Dashboard - Admin</title>
+</head>
+<body>
+    <div id="content">
+        <h1 class="h2 mb-4">Dashboard</h1>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">Categories</h5>
+                                <h2 class="display-4" th:text="${categoryCount}">0</h2>
+                            </div>
+                            <i class="bi bi-folder display-4"></i>
+                        </div>
+                        <a th:href="@{/admin/categories}" class="btn btn-light mt-3">Manage Categories</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">Posts</h5>
+                                <h2 class="display-4" th:text="${postCount}">0</h2>
+                            </div>
+                            <i class="bi bi-file-text display-4"></i>
+                        </div>
+                        <a th:href="@{/admin/posts}" class="btn btn-light mt-3">Manage Posts</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">Users</h5>
+                                <h2 class="display-4" th:text="${userCount}">0</h2>
+                            </div>
+                            <i class="bi bi-people display-4"></i>
+                        </div>
+                        <a th:href="@{/admin/users}" class="btn btn-light mt-3">Manage Users</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a th:href="@{/admin/categories/create}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-plus-circle me-2"></i> Add New Category
+                            </a>
+                            <a th:href="@{/admin/posts/create}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-plus-circle me-2"></i> Add New Post
+                            </a>
+                            <a th:href="@{/admin/users/create}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-plus-circle me-2"></i> Add New User
+                            </a>
+                            <a th:href="@{/}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-eye me-2"></i> View Blog
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">System Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Java Version
+                                <span class="badge bg-secondary" th:text="${javaVersion}">Java Version</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Operating System
+                                <span class="badge bg-secondary" th:text="${osName}">OS</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Server Time
+                                <span class="badge bg-secondary" th:text="${#temporals.format(serverTime, 'yyyy-MM-dd HH:mm:ss')}">Time</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

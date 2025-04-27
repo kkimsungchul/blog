@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: blog
+
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://192.168.55.125:5532/blogdb
+    driverClassName: org.postgresql.Driver
+    username: blog_admin
+    password: blog_admin1
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+  # Thymeleaf Configuration
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+# Server Configuration
+server:
+  port: 8080

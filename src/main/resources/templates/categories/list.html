@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/default :: html(
+        ~{::title},
+        ~{::#content},
+        ~{}
+      )}">
+<head>
+    <title>Categories - Blog</title>
+</head>
+<body>
+    <div id="content">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h2">All Categories</h1>
+                    <a th:href="@{/}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+                
+                <div th:if="${#lists.isEmpty(categories)}" class="alert alert-info">
+                    No categories available yet.
+                </div>
+                
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <div th:each="category : ${categories}" class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${category.name}">Category Name</h5>
+                                <p class="card-text" th:if="${category.description}" th:text="${category.description}">Category description</p>
+                                <p class="card-text text-muted">
+                                    <small>
+                                        <span th:text="${category.posts.size()}">0</span> posts | 
+                                        Created: <span th:text="${#temporals.format(category.createdAt, 'yyyy-MM-dd')}">2023-01-01</span>
+                                    </small>
+                                </p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a th:href="@{/categories/{id}(id=${category.id})}" class="btn btn-sm btn-outline-primary">View Posts</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">About Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Categories help organize posts by topic. Click on a category to see all posts in that category.</p>
+                        <p class="text-muted">Total categories: <span th:text="${categories.size()}">0</span></p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Search Posts</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/posts/search}" method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="query" placeholder="Search..." required>
+                                <button class="btn btn-outline-primary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/default :: html(
+        ~{::title},
+        ~{::#content},
+        ~{::#scripts}
+      )}">
+<head>
+    <title th:text="${post.title} + ' - Blog'">Post Title - Blog</title>
+</head>
+<body>
+    <div id="content">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-md-8">
+                <div class="mb-4">
+                    <a th:href="@{/posts}" class="btn btn-outline-secondary mb-3">
+                        <i class="bi bi-arrow-left"></i> Back to Posts
+                    </a>
+                    <div class="card">
+                        <div class="card-body">
+                            <h1 class="card-title" th:text="${post.title}">Post Title</h1>
+                            <div class="card-subtitle mb-3 text-muted">
+                                <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Date</span> | 
+                                Category: <a th:href="@{/categories/{id}(id=${post.category.id})}" th:text="${post.category.name}">Category</a> | 
+                                Author: <span th:text="${post.author.name != null && !post.author.name.isEmpty() ? post.author.name : post.author.username}">Author</span>
+                            </div>
+
+                            <div class="card-text mb-4" th:utext="${post.content}" style="white-space: pre-wrap;">
+                                Post content goes here...
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <button id="likeButton" class="btn btn-sm btn-outline-primary me-2">
+                                    <i class="bi bi-heart"></i> Like
+                                </button>
+                                <span id="likeCount" class="text-muted" th:text="${likeCount} + ' likes'">0 likes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Comments</h4>
+                        <span class="badge bg-secondary" th:text="${commentCount}">0</span>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(comments)}" class="alert alert-info">
+                            No comments yet. Be the first to comment!
+                        </div>
+
+                        <div th:each="comment : ${comments}" class="mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong th:text="${comment.user.name != null && !comment.user.name.isEmpty() ? comment.user.name : comment.user.username}">Username</strong>
+                                    <small class="text-muted ms-2" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">Date</small>
+                                </div>
+                                <div>
+                                    <a th:href="@{/comments/edit/{id}(id=${comment.id})}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a th:href="@{/comments/delete/{id}(id=${comment.id})}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Are you sure you want to delete this comment?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="mt-2" th:text="${comment.content}">Comment content</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comment Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Add a Comment</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/comments/create}" th:object="${newComment}" method="post">
+                            <input type="hidden" name="postId" th:value="${post.id}">
+                            <!-- In a real application, you would get the current user ID from the session -->
+                            <div class="mb-3">
+                                <label for="userId" class="form-label">Select User</label>
+                                <select class="form-select" id="userId" name="userId" required>
+                                    <option value="">Select a user</option>
+                                    <option th:value="${post.author.id}" 
+                                            th:text="${post.author.name != null && !post.author.name.isEmpty() ? post.author.name : post.author.username}">
+                                        User Name
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="commentContent" class="form-label">Comment</label>
+                                <textarea class="form-control" id="commentContent" th:field="*{content}" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">About the Author</h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 th:text="${post.author.name != null && !post.author.name.isEmpty() ? post.author.name : post.author.username}">Author Name</h5>
+                        <p class="text-muted">Author of <span th:text="${post.author.posts.size()}">0</span> posts</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Posts</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(relatedPosts)}" class="alert alert-info">
+                            No related posts found.
+                        </div>
+                        <div th:if="${not #lists.isEmpty(relatedPosts)}">
+                            <div class="list-group">
+                                <a th:each="relatedPost : ${relatedPosts}" 
+                                   th:href="@{/posts/{id}(id=${relatedPost.id})}" 
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1" th:text="${relatedPost.title}">Related Post Title</h6>
+                                        <small th:text="${#temporals.format(relatedPost.createdAt, 'yyyy-MM-dd')}">Date</small>
+                                    </div>
+                                    <small class="text-muted">
+                                        <span th:if="${relatedPost.category.id == post.category.id}" class="badge bg-primary">Same Category</span>
+                                        <span th:if="${relatedPost.author.id == post.author.id}" class="badge bg-success">Same Author</span>
+                                    </small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scripts">
+        <script th:inline="javascript">
+            $(document).ready(function() {
+                // In a real application, you would get the current user ID from the session
+                const postId = /*[[${post.id}]]*/ 1;
+                const userId = 1; // Default user ID for demonstration
+
+                // Get initial like status
+                $.get(`/likes/status?postId=${postId}&userId=${userId}`, function(data) {
+                    updateLikeButton(data.userLiked, data.likeCount);
+                });
+
+                // Handle like button click
+                $('#likeButton').click(function() {
+                    $.post(`/likes/toggle?postId=${postId}&userId=${userId}`, function(data) {
+                        updateLikeButton(data.userLiked, data.likeCount);
+                    });
+                });
+
+                function updateLikeButton(userLiked, likeCount) {
+                    if (userLiked) {
+                        $('#likeButton').html('<i class="bi bi-heart-fill"></i> Unlike');
+                        $('#likeButton').removeClass('btn-outline-primary').addClass('btn-primary');
+                    } else {
+                        $('#likeButton').html('<i class="bi bi-heart"></i> Like');
+                        $('#likeButton').removeClass('btn-primary').addClass('btn-outline-primary');
+                    }
+                    $('#likeCount').text(likeCount + ' likes');
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
