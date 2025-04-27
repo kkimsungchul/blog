@@ -23,7 +23,8 @@
                             <div class="card-subtitle mb-3 text-muted">
                                 <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Date</span> | 
                                 Category: <a th:href="@{/categories/{id}(id=${post.category.id})}" th:text="${post.category.name}">Category</a> | 
-                                Author: <span th:text="${post.author.name != null && !post.author.name.isEmpty() ? post.author.name : post.author.username}">Author</span>
+                                Author: <span th:text="${post.author.name != null && !post.author.name.isEmpty() ? post.author.name : post.author.username}">Author</span> |
+                                <i class="bi bi-eye"></i> <span th:text="${post.viewCount}">0</span> views
                             </div>
 
                             <div class="card-text mb-4" th:utext="${post.content}" style="white-space: pre-wrap;">

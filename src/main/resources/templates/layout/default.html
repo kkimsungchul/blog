@@ -48,6 +48,17 @@
                     <input class="form-control me-2" type="search" name="query" placeholder="Search" required>
                     <button class="btn btn-outline-light" type="submit">Search</button>
                 </form>
+
+                <!-- Visitor Counter -->
+                <div class="navbar-text mx-3" th:if="${todayVisitorCount != null and totalVisitorCount != null}">
+                    <span class="badge bg-info me-1">
+                        <i class="bi bi-people-fill"></i> Today: <span th:text="${todayVisitorCount}">0</span>
+                    </span>
+                    <span class="badge bg-secondary">
+                        <i class="bi bi-people-fill"></i> Total: <span th:text="${totalVisitorCount}">0</span>
+                    </span>
+                </div>
+
                 <ul class="navbar-nav ms-auto">
                     <!-- Show these links only to anonymous users (not logged in) -->
                     <li class="nav-item" sec:authorize="isAnonymous()">

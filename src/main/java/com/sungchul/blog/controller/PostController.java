@@ -54,8 +54,8 @@ public class PostController {
 
     @GetMapping("/{id}")
     public String getPostDetails(@PathVariable("id") Long id, Model model) {
-        Post post = postService.getPostById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + id));
+        // Increment view count first
+        Post post = postService.incrementViewCount(id);
 
         // Get related posts (up to 5)
         List<Post> relatedPosts = postService.getRelatedPosts(post, 5);

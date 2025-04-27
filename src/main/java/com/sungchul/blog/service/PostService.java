@@ -44,6 +44,14 @@ public class PostService {
         return postRepository.findById(id);
     }
 
+    @Transactional
+    public Post incrementViewCount(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + id));
+        post.setViewCount(post.getViewCount() + 1);
+        return postRepository.save(post);
+    }
+
     @Transactional(readOnly = true)
     public Page<Post> getPostsByCategory(Category category, Pageable pageable) {
         return postRepository.findByCategory(category, pageable);
