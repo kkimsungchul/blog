@@ -36,6 +36,7 @@ jobs:
           host: 61.98.137.108
           username: ${{ github.event.inputs.server_username }}
           password: ${{ github.event.inputs.server_password }}
+          port: 2222
           script: |
             echo "Killing existing Spring Boot application if running..."
             pkill -f '/application/blog-0.0.1-SNAPSHOT.jar' || true
@@ -47,6 +48,7 @@ jobs:
           host: 61.98.137.108
           username: ${{ github.event.inputs.server_username }}
           password: ${{ github.event.inputs.server_password }}
+          port: 2222
           source: build/libs/blog-0.0.1-SNAPSHOT.jar
           target: /application/
 
@@ -56,6 +58,7 @@ jobs:
           host: 61.98.137.108
           username: ${{ github.event.inputs.server_username }}
           password: ${{ github.event.inputs.server_password }}
+          port: 2222
           script: |
             cd /application
             nohup java -jar blog-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
