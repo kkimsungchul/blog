@@ -1,0 +1,58 @@
+name: Build and Deploy Spring Boot App
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_username:
+        description: 'SSH Username for Server'
+        required: true
+      server_password:
+        description: 'SSH Password for Server'
+        required: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Stop old application
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: 61.98.137.108
+          username: ${{ github.event.inputs.server_username }}
+          password: ${{ github.event.inputs.server_password }}
+          script: |
+            echo "Killing existing Spring Boot application if running..."
+            pkill -f '/application/blog-0.0.1-SNAPSHOT.jar' || true
+            mkdir -p /application
+
+      - name: Upload JAR file
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: 61.98.137.108
+          username: ${{ github.event.inputs.server_username }}
+          password: ${{ github.event.inputs.server_password }}
+          source: build/libs/blog-0.0.1-SNAPSHOT.jar
+          target: /application/
+
+      - name: Run new application
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: 61.98.137.108
+          username: ${{ github.event.inputs.server_username }}
+          password: ${{ github.event.inputs.server_password }}
+          script: |
+            cd /application
+            nohup java -jar blog-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+            echo "Application started."
