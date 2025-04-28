@@ -15,18 +15,19 @@
             <div class="col-md-8">
                 <div class="jumbotron p-4 mb-4 bg-light rounded">
                     <h1 class="display-4">처리의 개발 블로그</h1>
-                    <p class="lead">블로그에서 필요한 정보를 확인하고 생각을 공유해요</p>
+                    <p class="lead">개발업무/공부를 진행하며서 습득한 내용을 블로그에 정리하고 있습니다.</p>
                     <hr class="my-4">
                     <p>카테고리에서 관련된 내용을 확인하거나 아래에서 최신 게시물을 확인해주세요</p>
                     <a class="btn btn-primary btn-lg" th:href="@{/posts}" role="button">View All Posts</a>
                 </div>
 
+
                 <h2 class="mb-4">Recent Posts</h2>
-                
+
                 <div th:if="${#lists.isEmpty(recentPosts)}" class="alert alert-info">
                     No posts available yet.
                 </div>
-                
+
                 <div th:each="post : ${recentPosts}" class="card mb-4">
                     <div class="card-body">
                         <h3 class="card-title" th:text="${post.title}">Post Title</h3>
@@ -40,9 +41,43 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Sidebar -->
             <div class="col-md-4">
+                <!-- Top Weekly Posts -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">최근 일주일간 인기 게시물</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(topWeeklyPosts)}" class="alert alert-info">
+                            No popular posts available for the last week.
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li th:each="post : ${topWeeklyPosts}" class="list-group-item">
+                                <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">Post Title</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Top All-Time Posts -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">전체 인기 게시물</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(topAllTimePosts)}" class="alert alert-info">
+                            No popular posts available yet.
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li th:each="post : ${topAllTimePosts}" class="list-group-item">
+                                <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">Post Title</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">Categories</h5>
@@ -59,13 +94,15 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">About</h5>
                     </div>
                     <div class="card-body">
-                        <p>처리의 개발 블로그입니다. IT관련 업계에 종사중이며 습득한 내용을 정리하고 있습니다.</p>
+                        <p>IT 업계에 종사하고 있으며,</p>
+                        <P>JAVA, Springboot를 위주로 개발을 하고 있습니다.</P>
+                        <p>그 외 Server , CI/CD , DB 등 IT와 관련된 다양한 내용에 관심이 많은 개발자 입니다.</p>
                         <a th:href="@{/about}" class="btn btn-sm btn-outline-secondary">Learn More</a>
                     </div>
                 </div>

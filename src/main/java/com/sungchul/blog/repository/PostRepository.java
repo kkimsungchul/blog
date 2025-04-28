@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -32,4 +33,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
            "LOWER(p.content) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
            "ORDER BY p.createdAt DESC")
     List<Post> findRelatedPostsByKeyword(@Param("postId") Long postId, @Param("keyword") String keyword, Pageable pageable);
+
+    // Find top posts by view count in the last week
+    @Query("SELECT p FROM Post p WHERE p.createdAt >= :weekAgo ORDER BY p.viewCount DESC")
+    List<Post> findTopPostsByViewCountInLastWeek(@Param("weekAgo") LocalDateTime weekAgo, Pageable pageable);
+
+    // Find top posts by total view count
+    @Query("SELECT p FROM Post p ORDER BY p.viewCount DESC")
+    List<Post> findTopPostsByTotalViewCount(Pageable pageable);
 }

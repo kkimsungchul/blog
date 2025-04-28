@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -85,6 +87,17 @@ public class PostService {
     @Transactional
     public void deletePost(Long id) {
         postRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Post> getTopPostsByViewCountInLastWeek(int count) {
+        LocalDateTime weekAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
+        return postRepository.findTopPostsByViewCountInLastWeek(weekAgo, PageRequest.of(0, count));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Post> getTopPostsByTotalViewCount(int count) {
+        return postRepository.findTopPostsByTotalViewCount(PageRequest.of(0, count));
     }
 
     /**

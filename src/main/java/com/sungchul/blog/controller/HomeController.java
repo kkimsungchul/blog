@@ -26,6 +26,13 @@ public class HomeController {
     public String home(Model model) {
         model.addAttribute("recentPosts", postService.getRecentPosts());
         model.addAttribute("categories", categoryService.getAllCategories());
+
+        // Add top posts by view count in the last week
+        model.addAttribute("topWeeklyPosts", postService.getTopPostsByViewCountInLastWeek(3));
+
+        // Add top posts by total view count
+        model.addAttribute("topAllTimePosts", postService.getTopPostsByTotalViewCount(3));
+
         return "home";
     }
 
